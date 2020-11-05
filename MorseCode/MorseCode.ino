@@ -5,11 +5,6 @@ static String morseCodes[]={
 /*c*/"-.-.",
 /*d*/"-..",
 /*e*/".",
-/*f*/"..-.",
-/*g*/"--.",
-/*h*/"....",
-/*i*/"..",
-/*j*/".---",
 /*k*/"-.-",
 /*l*/".-..",
 /*m*/"--",
@@ -24,6 +19,11 @@ static String morseCodes[]={
 /*v*/"...-",
 /*w*/".--",
 /*x*/"-..-",
+/*f*/"..-.",
+/*g*/"--.",
+/*h*/"....",
+/*i*/"..",
+/*j*/".---",
 /*y*/"-.--",
 /*z*/"--..",
 /*0*/"-----",
@@ -46,6 +46,7 @@ unsigned long pauseLen = 0;
 bool hasPressed = false;
 String letter = "";
 int nombreofletter = 0;
+bool Lock = false;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -72,6 +73,7 @@ void loop() {
     
   }else{
     if(hasPressed){
+      Lock = false;
       //Serial.println(millis() - timeLen);
       if(millis() - timeLen<200){
         letter += ".";
@@ -84,15 +86,18 @@ void loop() {
 
     }
     if((millis() - pauseLen>400) && letter != ""){
-      nombreofletter = 0;
-      for(byte i=0; i < (sizeof(morseLetters) / sizeof(String)); i++){
-        if(letter==morseCodes[i]){
-          nombreofletter=i;
-        }
-        Serial.println(morseLetters[nombreofletter]);
-      }
-      letter="";
+      if(!Lock){
+          nombreofletter = 0;
+          for(byte i=0; i < (sizeof(morseLetters) / sizeof(String)); i++){
+            if(letter==morseCodes[i]){
+              nombreofletter=i;
+            }
+            Serial.println(morseLetters[nombreofletter]);
+          }
+          letter="";
+          Lock=true;
 
+        }
     }
    }
   delay(10);
